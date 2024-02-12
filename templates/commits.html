@@ -25,7 +25,7 @@
             event.preventDefault(); // Empêcher le rechargement de la page
 
             const dateInput = document.getElementById('dateInput').value;
-            const response = await fetch(`/extract-minutes/${dateInput}`);
+            const response = await fetch(`/commits/extract-minutes/${dateInput}`);
             const data = await response.json();
 
             document.getElementById('minutesOutput').innerText = `Minutes extraites : ${data.minutes}`;
