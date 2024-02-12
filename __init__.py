@@ -22,9 +22,16 @@ def meteo():
     json_content = json.loads(raw_content.decode('utf-8'))
     results = []
     for list_element in json_content.get('list', []):
-        dt_value = list_element.get('dt')
-        temp_day_value = list_element.get('temp', {}).get('dt_txt') - 273.15 # Conversion de Kelvin en °c 
-        results.append({'Jour': dt_value, 'temp': temp_day_value})
+    dt_value = list_element.get('dt')
+    temp_k_value = list_element.get('main', {}).get('temp')  # Température en Kelvin
+    temp_c_value = temp_k_value - 273.15 if temp_k_value is not None else None  # Conversion en °C
+    weather_description = list_element.get('weather', [{}])[0].get('description', 'No description')  # Description météo
+
+    results.append({
+        'Timestamp': dt_value,
+        'Temperature (°C)': temp_c_value,
+        'Weather': weather_description
+    })
     return jsonify(results=results)
 
 @app.route("/rapport/")
