@@ -19,8 +19,9 @@ def MaPremiereAPI():
 def meteo():
     response = urlopen('https://samples.openweathermap.org/data/2.5/forecast?lat=0&lon=0&appid=xxx')
     raw_content = response.read()
-    json_content = json.loads(raw_content.decode('utf-8'))
+    json_content = json.loads(your_json_string)  # Remplacez your_json_string par votre chaîne JSON
     results = []
+  
     for list_element in json_content.get('list', []):
     dt_value = list_element.get('dt')
     temp_k_value = list_element.get('main', {}).get('temp')  # Température en Kelvin
