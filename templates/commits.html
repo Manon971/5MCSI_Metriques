@@ -3,50 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Graphique de Commits</title>
-    <!-- Ajout de la bibliothèque Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Extraction des minutes</title>
 </head>
 <body>
-    <h1>Graphique de Commits</h1>
-    <canvas id="myChart"></canvas>
+    <h1>Extraction des minutes</h1>
+    <p>Cette page extrait les minutes à partir d'une chaîne de date fournie.</p>
+    
+    <!-- Formulaire pour saisir la date -->
+    <form id="dateForm">
+        <label for="dateInput">Entrez une date au format "YYYY-MM-DDTHH:MM:SSZ" :</label>
+        <input type="text" id="dateInput" name="dateInput" required>
+        <button type="submit">Extraire les minutes</button>
+    </form>
+    
+    <!-- Affichage des minutes extraites -->
+    <div id="minutesOutput"></div>
 
     <script>
-        // Fonction pour créer le graphique
-        async function createChart() {
-            const response = await fetch('/api/commits-data');
-            const commitsData = await response.json();
+        // Fonction pour gérer la soumission du formulaire
+        document.getElementById('dateForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Empêcher le rechargement de la page
 
-            const labels = commitsData.labels;
-            const data = commitsData.data;
+            const dateInput = document.getElementById('dateInput').value;
+            const response = await fetch(`/extract-minutes/${dateInput}`);
+            const data = await response.json();
 
-            const chartConfig = {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Commits par minute',
-                        data: data,
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            };
-
-            const ctx = document.getElementById('myChart').getContext('2d');
-            new Chart(ctx, chartConfig);
-        }
-
-        // Créer le graphique une fois la page chargée
-        document.addEventListener('DOMContentLoaded', createChart);
+            document.getElementById('minutesOutput').innerText = `Minutes extraites : ${data.minutes}`;
+        });
     </script>
 </body>
 </html>
