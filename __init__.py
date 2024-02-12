@@ -2,12 +2,7 @@ from flask import Flask, render_template_string, render_template, jsonify
 from flask import render_template
 from flask import json
 from datetime import datetime
-import matplotlib.pyplot as plt
-import io
-import base64
-from urllib.request import urlopen
-import sqlite3
-import requests
+
                                                                                                                         
 app = Flask(__name__)  #commentaire 
                                                                                                                                        
