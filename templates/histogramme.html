@@ -10,7 +10,7 @@
 
       function drawBackgroundColor() {
         // Récupération de données depuis notre API /paris/
-        fetch('/paris/')
+        fetch('/meteo/')
           .then(response => response.json())
           .then(data => {
             drawChart(data);
@@ -29,7 +29,7 @@
 
         // Configurer les options du graphique histogramme
         var options = {
-          title: 'Évolution des températures de Paris pour les 16 prochains jours',
+          title: 'Évolution des températures pour les 16 prochains jours',
           legend: { position: 'none' }, // Les histogrammes n'utilisent généralement pas de légende
           histogram: { bucketSize: 2 } // Ajustez la taille du seau selon vos données et vos préférences
         };
