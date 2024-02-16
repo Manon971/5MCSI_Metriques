@@ -1,35 +1,65 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Extraction des minutes</title>
+    <title>Graphique des Commits par Minute</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <h1>Extraction des minutes</h1>
-    <p>Cette page extrait les minutes à partir d'une chaîne de date fournie.</p>
-    
-    <!-- Formulaire pour saisir la date -->
-    <form id="dateForm">
-        <label for="dateInput">Entrez une date au format "YYYY-MM-DDTHH:MM:SSZ" :</label>
-        <input type="text" id="dateInput" name="dateInput" required>
-        <button type="submit">Extraire les minutes</button>
-    </form>
-    
-    <!-- Affichage des minutes extraites -->
-    <div id="minutesOutput"></div>
+    <h1>Graphique des Commits par Minute</h1>
+    <canvas id="myChart"></canvas>
 
     <script>
-        // Fonction pour gérer la soumission du formulaire
-        document.getElementById('dateForm').addEventListener('submit', async function(event) {
-            event.preventDefault(); // Empêcher le rechargement de la page
+        // Récupérer les données des commits par minute depuis l'API GitHub
+        fetch('https://api.github.com/repos/OpenRSI/5MCSI_Metriques/commits')
+            .then(response => response.json())
+            .then(data => {
+                // Initialiser un dictionnaire pour stocker le nombre de commits par minute
+                const commitCounts = {};
 
-            const dateInput = document.getElementById('dateInput').value;
-            const response = await fetch(`/commits/extract-minutes/${dateInput}`);
-            const data = await response.json();
+                // Parcourir les données des commits
+                data.forEach(commit => {
+                    const dateString = commit.commit.author.date;
+                    const dateObject = new Date(dateString);
+                    const minute = dateObject.getMinutes(); // Récupérer la minute de la date
 
-            document.getElementById('minutesOutput').innerText = `Minutes extraites : ${data.minutes}`;
-        });
+                    // Incrémenter le compteur de commits pour cette minute
+                    commitCounts[minute] = (commitCounts[minute] || 0) + 1;
+                });
+
+                // Extraire les minutes et les nombres de commits
+                const minutes = Object.keys(commitCounts);
+                const commits = Object.values(commitCounts);
+
+                // Créer le graphique
+                const ctx = document.getElementById('myChart').getContext('2d');
+                const myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: minutes,
+                        datasets: [{
+                            label: 'Nombre de commits par minute',
+                            data: commits,
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                        }
+                    }
+                });
+            });
     </script>
 </body>
 </html>
+```
+
+Avec ce code HTML, le graphique des commits par minute sera généré en utilisant les données récupérées depuis l'API GitHub lorsque vous accédez à `https://{Votre URL}/commits/`.
